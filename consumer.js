@@ -1,6 +1,6 @@
 // Case #4: Requiring/Exporting modules mixed (fails)
 const someMath = import("./index.js");
-import square from "./index.cjs";
+import square from "./index.js";
 
 console.log(someMath);
 console.log(square);
