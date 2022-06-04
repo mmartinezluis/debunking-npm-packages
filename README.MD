@@ -209,3 +209,29 @@ Rule:
 The left-handside of the second `require` utilizes JavaScript's destructuring assignment to pull in the VALUES from the called referenced properties.  Since `pencil` WAS NOT a property on the exported object, it is `undefined`.
 
 
+## Case #3: Requiring modules (failing)
+
+**Node, index.js:**
+```javascript
+const sum = (num) => num + num;
+exports.sum = sum;
+```
+
+**Node response, consumer.js:**
+```javascript
+const everyting = require("./index4")
+console.log(everyting)
+
+// Throws error:
+Error: Cannot find module './index4'
+code: 'MODULE_NOT_FOUND',
+requireStack: [ '/Users/username/debunking-npm-packages/consumer.js' ]
+```
+
+**Explanation:**
+The file `index4.js` is not present at the specified directory, and Node throws an error. Now, if we create a folder called `node_modules` and place it in the root directory (next to package.json), and inlucde an empty file within it called `index4.js`, and change the `require` statement in consumer.js from `require("./index4)` to `require("index4")`, we get the following response:
+```javascript
+// consumer.js
+console.log(everything) // => {}
+```
+that is, Node searched for an `index4.js` file relative to the directory `node_modules` and, since it found it, it returned our console.log.

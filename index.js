@@ -1,16 +1,23 @@
+// Case #3: Requiring modules (failing)
+const sum = (num) => num + num;
+exports.sum = sum;
+
+
+
+// ********************************************* //
+
 // Case #2: Requiring modules (passing) 
-const info = "my info";
-const calendar = {
-    day: "Monday",
-    month: "July"
-};
+// const info = "my info";
+// const calendar = {
+//     day: "Monday",
+//     month: "July"
+// };
 
-module.exports = "We are two 'module.exports=', do I get exported?";
-module.exports = {
-    info,
-    calendar
-};
-
+// module.exports = "We are two 'module.exports=', do I get exported?";
+// module.exports = {
+//     info,
+//     calendar
+// };
 
 
 // ********************************************* //
