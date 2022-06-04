@@ -237,7 +237,7 @@ console.log(everything) // => {}
 that is, Node searched for an `index4.js` file relative to the directory `node_modules` and, since it found it, it returned our console.log.
 
 
-## Case #4: Requiring/Exporting modules mixed (fails)
+## Case #4: Requiring/Exportting modules mixed (fails)
 
 **Node, index.js:**
 ```javascript
@@ -263,19 +263,19 @@ SyntaxError: Cannot use import statement outside a module
 ```
 
 **Explanation:**
-Since we are using the syntax `module.exports=`, `module.exports.something`, `exports.something` for exporting, and the syntax `require("file-location")`, we are using the CommonJS module syntax (aka, JS module, default to Node JS). The syntax `imoprt blank from "directory"` belongs to the ECMAScripts Module syntax (aka, ES module or ESM). You cannot mix importing and/or exporting from these two module syntax.
+Since we are using the syntax `module.exports=`, `module.exports.something`, `exports.something` for exporting, and the syntax `require("file-location")`, we are using the CommonJS module syntax (aka, CJS module, default to Node JS). The syntax `imoprt blank from "directory"` belongs to the ECMAScripts Module syntax (aka, ES module or ESM). You cannot mix importing and/or exporting from these two module syntax.
 
 Let's implement the second suggestion given in the warning, that is, changing the file extension to `.mjs` (modular javascript, which supports `import ` statement). After doing so and running `Node consumer.mjs`, we get a new error:
 
-```javascript
+```
 file:///Users/username/debunking-npm-packages/consumer.mjs:2
 const someMath = require("./index");
 
 ReferenceError: require is not defined in ES module scope, you can use import instead
 ```
 
-Now Node is not complaining about the `import` statement, but it is complaining about the `require` statement. This means that `consumer.mjs` is running as an ES (ECMAScript) module and not as a CommonJS module (CJS module). Ok; let us remove the `require` statement; we get:
-```javascript
+Now Node is not complaining about the `import` statement, but it is complaining about the `require` statement. This means that `consumer.mjs` is running as an ES (ECMAScript) module and not as a CommonJS module (CJS module). Ok; let us remove the `require` statement; after running `node consumer.mjs`, we get:
+```
 file:///Users/luismartinez/debunking-npm-packages/consumer.mjs:5
 console.log(someMath);
 
@@ -290,7 +290,90 @@ Interesting; we are gtting a response with no error. Learnings:
 
 * A consumer file with extension`.mjs` whose code is written with ESM syntax can successfully import modules from a file that uses CommonJS syntax (that is, uses `module.exports =` syntax and alike).
 
-Let us test this configuaration on a browser by installing the package in a React app:
+Let us now revert the code to the initial state and try out the first suggestion in the warning from the first error, that is, include `"type": "module"` in package.json:
+```javascript
+// package.json
+{
+ // some properties
+  "main": "index.js",  
+  "type": "module",
+  "author": "Luis Martinez",
+  // more properties
+}
+```
 
-(response coming)
+After running `node consumer.js` we get:
+```javascript
+file:///Users/username/debunking-npm-packages/consumer.js:3
+import square from "./index.js";
 
+SyntaxError: The requested module './index.js' does not provide an export named 'default'
+```
+Ok; Node is complaining about the `index.js` file and not about `consumer.js`; well, this case can be tricky. Node is complaning about `index.js` becuase of a statement inluded in `consumer.js`, namely, the statement:
+
+```
+import square from "./index.js";
+```
+
+When adding the property `"type": "module"` to the package.sjon file, all `.js` files within the scope of package.json are treated as ES modules (ECMAScript modules). This means that `index.js` and `consumer.js` are being treated as ES modules (and not Common JS modules). The statement `import square from "./index.js"` is called a `default import`. Such a statement expects a correspnoding `export default statment` (in ES syntax), which has the following format:
+```
+export default [something]
+```
+where `something` can be a string, a function, an array, an object, etc. Hence, since `index.js` is using CJS syntax (Common JS syntax) for exporting, namely, 
+```
+module.exports = { square }
+```
+we need to change the syntax to ES syntax. Now, if we did not know anything about ES syntax, we would probably attempt adding a `default` somewhere to the previous code, since the error says `provide an export named 'default'`; so let's do that first:
+```javascript
+const square = (n) => n * n;
+
+module.exports = {
+    default: square
+}
+
+// and let's try another way as well
+module.default = square
+```
+For the above two trials we still get the same error. So let us actually fix the error using the ES module default export syntax:
+```javascript
+const square = (n) => n * n;
+
+export default square  
+```
+Running, again, `node consumer.js` yields the following response:
+```
+file:///Users/luismartinez/debunking-npm-packages/consumer.js:2
+const someMath = require("./index.js");
+
+ReferenceError: require is not defined in ES module scope, you can use import instead
+This file is being treated as an ES module because it has a '.js' file extension and '/Users/username/debunking-npm-packages/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+
+  at file:///Users/username/debunking-npm-packages/consumer.js:2:18
+```
+
+Ok, remember that the files are running as ES mdodules; so now that we are using the proper syntax for exporting in `index.js` for the corresponding import syntax in `consumer.js`, we are no longer getting an error for index.js; what we need to do next is removing the `require` statement from `consumer.js` along with the console log that uses it:
+```javascript
+consumer.js
+import square from "./index.js";
+console.log(square);
+```
+
+Running consumer.js again yields:
+```javascript
+[Function: square]
+```
+NO ERRORS. Evryting is running within the ES module scope.
+
+Let us summarize the learnings from this section:
+
+* If package.json does not include the property `"types": "module"`, all `.js` files within the scope of that package.json run as CJS modules (CommonJS modules; Native to Node Js). 
+
+* Changing the file extension of a file from `.js` to `.mjs` makes THAT FILE ONLY run as a ES module (ECMAScript module (ESM); native to JavaScript). 
+
+* An ESM consumer file with extension `.mjs` (that is, uses `import` statement) can successfully import modules from CommonJS files (from both, `.js` and `.cjs` files).
+
+* A consumer file running as an ES module module CANNOT import nor export using CommonJS module syntax ((importing)``const blank = **require()**`/(exporting) `module.exports =`; `module.exports.something =`; `exports.something =`)). Importing will throw `ReferenceError: require is not defined in ES module scope, you can use import instead`, while exporting will throw `ReferenceError: exports is not defined in ES module scope`.
+
+* When package.json includes `"types": "module"`, all `.js` files within the scope of that package.json will run as ES modules. 
+
+* The above statemen means that for all `.js` files, ESM syntax must be used (cannot merge CommonJs syntax).
