@@ -104,12 +104,11 @@ exports.moreStuff = "More stuff";
 module.exports.canIGo = "Can I go?";
 ```
 
-**Node, consumer.js:**
+**Node response, consumer.js:**
 ```javascript
-const everyting = require('./index')
-
-console.log(everyting)
-// log:
+const everyting = require('./index');
+console.log(everyting);
+// Log:
 {
   string: 'my string',
   myFunction: [Function: myFunction],
@@ -122,6 +121,49 @@ console.log(everyting)
   canIGo: 'Can I go?'
 }
 ```
+Consumer app response (React, react-scripts 5.0.1):
+```javascript
+{
+    addMe: "Add me too!!!"
+    array: (7) [1, 2, 3, 4, 5, 6, 7]
+    canIGo: "Can I go?"
+    myFunction: ƒ ()
+    myObject: {day: 'Monday', month: 'July'}
+    string: "my string"
+}
+```
+**Explanation:**
+Out of the 6 exports, only 3 exports were exported, namely:
+`module.exports = `, and the two `module.exports.something` located below the `module.exports =`.
 
+Rule: 
+> * If present, `module.exports =` always get exported (the default export).
+> * If there is a `module.exports =`, the `module.exports.something` get exported ONLY IF they are located below the `module.exports =`.
+> * If there is a `module.exports =`, the `exports.something` DON'T GET EXPORTED (regardless of their location).
+
+Let us now remove the `module.exports =` to see what happens:
+```javascript
+// index.js
+exports.additional = "Additional";
+module.exports.again = "Again";
+module.exports.addMe = "Add me too!!!";
+exports.moreStuff = "More stuff";
+module.exports.canIGo = "Can I go?";
+
+// Response, consumer.js:
+const everyting = require('./index');
+console.log(everyting);
+// Log:
+{
+  additional: 'Additional',
+  again: 'Again',
+  addMe: 'Add me too!!!',
+  moreStuff: 'More stuff',
+  canIGo: 'Can I go?'
+}
+```
+
+Rule:
+> If there is not a `module.esports =`, then both `module.exports.something` and `exports.somethig` always get exported.
 
 
