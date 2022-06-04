@@ -237,7 +237,7 @@ console.log(everything) // => {}
 that is, Node searched for an `index4.js` file relative to the directory `node_modules` and, since it found it, it returned our console.log.
 
 
-## Case #4: Requiring/Exportting modules mixed (fails)
+## Case #4: Requiring/Exportting modules mixed (failing + passing)
 
 **Node, index.js:**
 ```javascript

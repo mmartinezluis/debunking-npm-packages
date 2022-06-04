@@ -1,4 +1,4 @@
-// Case #4: Requiring/Exporting modules mixed (fails)
+// Case #4: Requiring/Exporting modules mixed (failing + passing)
 const someMath = import("./index.js");
 import square from "./index.js";
 

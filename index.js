@@ -1,11 +1,6 @@
-// Case #4: Requiring/Exporting modules mixed (fails)
+// Case #4: Requiring/Exporting modules mixed (failing + passing)
 const square = (n) => n * n;
-
-module.exports = square
-
-
-
-
+module.exports = square;
 
 
 
