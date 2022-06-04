@@ -1,7 +1,19 @@
-// Case #1: Mixed exports (passing)
-const everyting = require('./index')
+// Case #2: Requiring modules (passing)
+const everyting = require('./index');
+const { info, calendar, pencil } = require('./index');
+console.log(everyting);
+console.log(info);
+console.log(calendar);
+console.log(pencil);
 
-console.log(everyting)
+
+
+// ********************************************* //
+
+// Case #1: Mixed exports (passing)
+
+// const everyting = require('./index');
+// console.log(everyting);
 
 
 

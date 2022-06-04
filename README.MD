@@ -71,6 +71,7 @@ module.exports  // =>  {}
 ```
 Exporting a file exports the `exports` property of the module object. Hence, exporting an empty file exports an empty object. 
 
+
 ## Case #1: Mixed exports (passing)
 
 **Node, index.js:**
@@ -136,10 +137,10 @@ Consumer app response (React, react-scripts 5.0.1):
 Out of the 6 exports, only 3 exports were exported, namely:
 `module.exports = `, and the two `module.exports.something` located below the `module.exports =`.
 
-Rule: 
-> * If present, `module.exports =` always get exported (the default export).
-> * If there is a `module.exports =`, the `module.exports.something` get exported ONLY IF they are located below the `module.exports =`.
-> * If there is a `module.exports =`, the `exports.something` DON'T GET EXPORTED (regardless of their location).
+Rules: 
+* If present, `module.exports =` always get exported (the default export).
+* If there is a `module.exports =`, the `module.exports.something` get exported ONLY IF they are located below the `module.exports =`.
+* If there is a `module.exports =`, the `exports.something` DON'T GET EXPORTED (regardless of their location).
 
 Let us now remove the `module.exports =` to see what happens:
 ```javascript
@@ -164,6 +165,47 @@ console.log(everyting);
 ```
 
 Rule:
-> If there is not a `module.esports =`, then both `module.exports.something` and `exports.somethig` always get exported.
+If there is not a `module.esports =`, then both `module.exports.something` and `exports.somethig` get always exported.
+
+
+## Case #2: Requiring modules (passing)
+**Node, index.js:**
+```javascript
+const info = "my info";
+const calendar = {
+    day: "Monday",
+    month: "July"
+};
+
+module.exports = "We are two 'module.exports=', do I get exported?";
+module.exports = {
+    info,
+    calendar
+};
+```
+
+**Node response, consumer.js:**
+```javascript
+const everyting = require('./index');
+const { info, calendar, pencil } = require('./index');
+console.log(everyting);
+console.log(info);
+console.log(calendar);
+console.log(pencil);
+
+// Logs:
+{ info: 'my info', calendar: { day: 'Monday', month: 'July' } }
+my info
+{ day: 'Monday', month: 'July' }
+undefined
+```
+
+**Explanation:**
+First, let us notice that we have two `module.exports =`. We derive the following rule
+
+Rule:
+* If there are multiple `module.exports =`, only the LAST ONE gets exported.
+
+The left-handside of the second `require` utilizes JavaScript's destructuring assignment to pull in the VALUES from the called referenced properties.  Since `pencil` WAS NOT a property on the exported object, it is `undefined`.
 
 
