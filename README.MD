@@ -224,8 +224,8 @@ console.log(everyting)
 
 // Throws error:
 Error: Cannot find module './index4'
-code: 'MODULE_NOT_FOUND',
-requireStack: [ '/Users/username/debunking-npm-packages/consumer.js' ]
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [ '/Users/username/debunking-npm-packages/consumer.js' ]
 ```
 
 **Explanation:**
@@ -235,3 +235,62 @@ The file `index4.js` is not present at the specified directory, and Node throws 
 console.log(everything) // => {}
 ```
 that is, Node searched for an `index4.js` file relative to the directory `node_modules` and, since it found it, it returned our console.log.
+
+
+## Case #4: Requiring/Exporting modules mixed (fails)
+
+**Node, index.js:**
+```javascript
+const square = (n) => n * n;
+module.exports = square;
+```
+
+**Node response, consumer.js:**
+```javascript
+const someMath = require("./index");
+import square from "./index";
+
+console.log(someMath);
+console.log(square);
+
+// Throws error:
+(node:30179) Warning: To load an ES module, set "type": "module" in the package.json or use the .mjs extension.
+/Users/username/debunking-npm-packages/consumer.js:3
+import square from "./index";
+^^^^^^
+
+SyntaxError: Cannot use import statement outside a module
+```
+
+**Explanation:**
+Since we are using the syntax `module.exports=`, `module.exports.something`, `exports.something` for exporting, and the syntax `require("file-location")`, we are using the CommonJS module syntax (aka, JS module, default to Node JS). The syntax `imoprt blank from "directory"` belongs to the ECMAScripts Module syntax (aka, ES module or ESM). You cannot mix importing and/or exporting from these two module syntax.
+
+Let's implement the second suggestion given in the warning, that is, changing the file extension to `.mjs` (modular javascript, which supports `import ` statement). After doing so and running `Node consumer.mjs`, we get a new error:
+
+```javascript
+file:///Users/username/debunking-npm-packages/consumer.mjs:2
+const someMath = require("./index");
+
+ReferenceError: require is not defined in ES module scope, you can use import instead
+```
+
+Now Node is not complaining about the `import` statement, but it is complaining about the `require` statement. This means that `consumer.mjs` is running as an ES (ECMAScript) module and not as a CommonJS module (CJS module). Ok; let us remove the `require` statement; we get:
+```javascript
+file:///Users/luismartinez/debunking-npm-packages/consumer.mjs:5
+console.log(someMath);
+
+ReferenceError: someMath is not defined
+```
+We get this new error becase `someMath` was being loaded using the `require` statement, but we commented it out, so trying to later execute `console.log(someMath)` throws an error. Let us remove that console log; we get:
+```javascript
+[Function: square]
+```
+
+Interesting; we are gtting a response with no error. Learnings:
+
+* A consumer file with extension`.mjs` whose code is written with ESM syntax can successfully import modules from a file that uses CommonJS syntax (that is, uses `module.exports =` syntax and alike).
+
+Let us test this configuaration on a browser by installing the package in a React app:
+
+(response coming)
+

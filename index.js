@@ -1,6 +1,14 @@
+// Case #4: Requiring/Exporting modules mixed (fails)
+const square = (n) => n * n;
+module.exports = square;
+
+
+
+// ********************************************* //
+
 // Case #3: Requiring modules (failing)
-const sum = (num) => num + num;
-exports.sum = sum;
+// const sum = (num) => num + num;
+// exports.sum = sum;
 
 
 

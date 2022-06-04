@@ -1,6 +1,16 @@
+// Case #4: Requiring/Exporting modules mixed (fails)
+const someMath = require("./index");
+import square from "./index.js";
+
+console.log(someMath);
+console.log(square);
+
+
+// ********************************************* //
+
 // Case #3: Requiring modules (failing)
-const everyting = require("index4")
-console.log(everyting)
+// const everyting = require("index4")
+// console.log(everyting)
 
 
 // ********************************************* //
