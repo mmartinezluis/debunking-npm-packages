@@ -71,10 +71,57 @@ module.exports  // =>  {}
 ```
 Exporting a file exports the `exports` property of the module object. Hence, exporting an empty file exports an empty object. 
 
+## Case #1: Mixed exports (passing)
 
+**Node, index.js:**
+```javascript
+// Case #1: Mixed exports (passing)
+const string = "my string"
 
+const myFunction = function(){
+    return "This is my function"
+}
+const array = [1,2,3,4,5,6,7]
 
+const myObject = {
+    day: "Monday",
+    month: "July"
+}
 
+// Mixed exports
+exports.additional = "Additional";
+module.exports.again = "Again";
+
+module.exports = {
+    string,
+    myFunction,
+    array,
+    myObject
+}
+
+module.exports.addMe = "Add me too!!!";
+exports.moreStuff = "More stuff";
+module.exports.canIGo = "Can I go?";
+```
+
+**Node, consumer.js:**
+```javascript
+const everyting = require('./index')
+
+console.log(everyting)
+// log:
+{
+  string: 'my string',
+  myFunction: [Function: myFunction],
+  array: [
+    1, 2, 3, 4,
+    5, 6, 7
+  ],
+  myObject: { day: 'Monday', month: 'July' },
+  addMe: 'Add me too!!!',
+  canIGo: 'Can I go?'
+}
+```
 
 
 
