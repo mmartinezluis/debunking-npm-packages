@@ -1,5 +1,6 @@
 // Case #4: Requiring/Exporting modules mixed (failing + passing)
 const square = (n) => n * n;
+
 module.exports = square;
 
 
