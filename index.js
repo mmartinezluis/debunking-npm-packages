@@ -1,7 +1,40 @@
-// Case #4: Requiring/Exporting modules mixed (failing + passing)
-const square = (n) => n * n;
+// Case #7: Serving different module types
 
-module.exports = square;
+let CryptoJS = {
+    enc: {
+        Utf8: "utf-8 enconding"
+    }
+}
+;(function (root, factory) {
+    console.log(define)
+	if (typeof exports !== "object") {
+		// CommonJS
+		module.exports = exports = factory(require("./commonjs_module/a_node_module"));
+	}
+	else if (typeof define === "function" && define.amd) {
+		// AMD
+		define(["./commonjs_module/a_node_module"], factory);
+	}
+	else {
+		// Global (browser)
+		factory(root.CryptoJS);
+	}
+}(this, function (CryptoJS) {
+
+	// return CryptoJS.enc.Utf8;
+	return "TESTING"
+
+}));
+
+
+
+// ********************************************* //
+
+// Case #4: Requiring/Exporting modules mixed (failing + passing)
+
+// const square = (n) => n * n;
+
+// module.exports = square;
 
 
 
@@ -16,6 +49,7 @@ module.exports = square;
 // ********************************************* //
 
 // Case #2: Requiring modules (passing) 
+
 // const info = "my info";
 // const calendar = {
 //     day: "Monday",
@@ -32,6 +66,7 @@ module.exports = square;
 // ********************************************* //
 
 // Case #1: Mixed exports (passing)
+
 // const string = "my string";
 // const myFunction = function(){
 //     return "This is my function"

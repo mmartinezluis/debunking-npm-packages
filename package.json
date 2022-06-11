@@ -1,12 +1,11 @@
 {
   "name": "debunking-npm-packages",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Errors encountered while creating an npm package",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mmartinezluis/debunking-npm-packages.git"

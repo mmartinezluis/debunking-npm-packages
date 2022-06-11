@@ -336,3 +336,36 @@ ReferenceError: exports is not defined in ES module scope.
 * When package.json includes `"types": "module"`, all `.js` files within the scope of that package.json will run as ES modules. However, files ending in `.cjs` will run as CJS modules.
 
 * The above statement means that for all `.js` files, ESM syntax must be used (cannot merge CommonJs syntax).
+
+
+## Case #5: 'Could not find a declaration for file...' warning
+(To be developed)
+If you are building your own npm package, and you install it in your app for testing, you might find a warning message in the line that imports your package, namely, on thisline:
+```javascript
+import MyPackage from `'..`your-npm-package'
+```
+If you place your mouse right after `from` you might see that a message pops up:
+```
+Could not find a declaration file for module '<your-npm-pakcage>'. '/Users/username/your-app/node_modules/your-npm-package/src/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/you-npm-package` if it exists or add a new declaration (.d.ts) file containing `declare module 'your-npm-package';`ts(7016)
+```
+
+
+## Case #6: 'Referrence error: process is not defined'
+(To be developed)
+```
+VM69:2 Uncaught ReferenceError: process is not defined
+    at Object.4043 (<anonymous>:2:13168)
+    at r (<anonymous>:2:306599)
+    at Object.8048 (<anonymous>:2:9496)
+    at r (<anonymous>:2:306599)
+    at Object.8641 (<anonymous>:2:1379)
+    at r (<anonymous>:2:306599)
+    at <anonymous>:2:315627
+    at <anonymous>:2:324225
+    at <anonymous>:2:324229
+    at HTMLIFrameElement.e.onload (ind
+```
+
+## Case #7: Serving CommonJs modules, RequireJS modules, AMD modules, and Browser modules
+(In progress)
