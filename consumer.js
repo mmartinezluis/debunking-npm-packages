@@ -1,24 +1,12 @@
-// Case #7: Serving different module types
-
-const someMath = require("./index");
-import square from "./index";
-
-define([
-    'require',
-    'dependency'
-], function(require, factory) {
-    'use strict';
-});
-console.log(this)
-
-
-
 // ********************************************* //
 
 // Case #4: Requiring/Exporting modules mixed (failing + passing)
 
-console.log(someMath);
-console.log(square);
+// const someMath = require("./index");
+// import square from "./index";
+
+// console.log(someMath);
+// console.log(square);
 
 
 

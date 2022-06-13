@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <!-- Load the requireJs library/framework -->
+        <script src="./js/require.js"></script>
+    </head>
+    <body>
+        <h1>We are Testing the RequireJS Module</h1>
+
+        <!-- Loading and using a define/AMD module -->
+        <script>
+            require.config({
+                baseUrl: 'js'
+            })
+            requirejs(['test'], function(test){
+                console.log(test)
+            })
+        </script>
+
+        <!--Loading a local ES Module (ECMAScript module) -->
+        <script type= "module">
+            import something from "../es_module/es_module.js"
+            something()
+        </script>
+
+        <!-- Loading a Brower Global module -->
+        <script src= "../browser_global_module/browser_global_module.js"></script>
+        <script>
+            console.log(browserModule)
+        </script>
+
+        <!-- Loading a hybrid module; (note: 'requireJs' needs to be turned off for loading the Global Browser version of this module) -->
+        <script src= "../hybrid_module//hybrid_module.js"></script>
+        
+    </body>
+</html>
